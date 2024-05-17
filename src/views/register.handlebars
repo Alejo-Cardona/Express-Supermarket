@@ -1,0 +1,39 @@
+<form action="/api/users/register" method="POST" class="container text-center text-secondary-emphasis col-6 mt-4 rounded">
+    <h1>Register</h1>
+    
+    <!-- INPUTS NAME -->
+    <section class="row">
+        <!-- FIRST NAME -->
+        <div class="col-4 ms-5">
+            <label for="first_name" class="form-label">Nombre:</label>
+            <input type="text" id="first_name" name="first_name" class="form-control" required><br>
+        </div>
+        <!-- LAST NAME -->
+        <div class="col-4">
+            <label for="last_name" class="form-label">Apellido:</label>
+            <input type="text" id="last_name" name="last_name" class="form-control" required><br>
+        </div>
+        <!-- AGE -->
+        <div class="col-2">
+            <label for="age" class="form-label">Edad:</label>
+            <input type="number" id="age" name="age" class="form-control" required><br>
+        </div>
+    </section>
+
+    <section class="container mt-4 col-8">
+        <!-- EMAIL -->
+        <label for="email" class="form-label">Email:</label>
+        <input type="email" id="email" name="email" class="form-control" required><br>
+
+        <!-- PASSWORD -->
+        <label for="password" class="form-label">Contraseña:</label>
+        <input type="password" id="password" name="password" class="form-control" required><br>
+    </section>
+    
+    <!-- BUTTONS -->
+    <section class="mt-4">
+        <button type="submit" class="btn btn-primary">Registrarse</button>
+        <button type="submit" class="btn btn-primary"><a href="/Login" class="text-light text-decoration-none">¿Ya tienes una cuenta?</a></button>
+    </section>
+
+</form>

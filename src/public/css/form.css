@@ -1,0 +1,23 @@
+form {
+    background-color: rgb(237, 237, 237);
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+}
+
+p.text-icon-github {
+    position: relative;
+    right: 42%;
+    top: 30%;
+}
+
+.btn-github:hover {
+    background-color: rgb(132, 132, 132);
+    box-shadow: 12px 12px 12px rgba(0, 0, 0, 0.1);
+}
+
+svg.icon {
+    height: 50px;
+    width: 50px;
+    position: relative;
+    left: 10%;
+}
