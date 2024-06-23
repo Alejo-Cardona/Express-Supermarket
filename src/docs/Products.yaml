@@ -1,0 +1,254 @@
+openapi: 3.0.0
+info:
+  title: API de Productos
+  version: 1.0.0
+  description: API para la gestión de productos
+
+servers:
+  - url: http://localhost:8080/api/products
+    description: Servidor local
+
+paths:
+  /api/products/{pid}:
+    get:
+      summary: Obtener un producto por su ID
+      description: Recupera los datos de un producto por su id
+      tags:
+        - Products
+      parameters:
+        - name: pid
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID del producto a recuperar
+      responses:
+        '200':
+          description: Devuelve un producto completo
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  payload:
+                    $ref: '#/components/schemas/Products'
+        '404':
+          description: Producto no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/products/create:
+    post:
+      summary: Crear un nuevo producto
+      description: Agregar un nuevo producto a la base de datos.
+      tags:
+        - Products
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+                price:
+                  type: number
+                stock:
+                  type: number
+                category:
+                  type: string
+                photo:
+                  type: string
+                  format: binary
+                required:
+                - title
+                - description
+                - price
+                - stock
+                - category
+                - photo
+      responses:
+        '200':
+          description: Producto creado con éxito
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Products'
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/products/remove/{pid}:
+    delete:
+      summary: Eliminar un producto
+      description: Eliminar un producto mediante su id
+      tags:
+        - Products
+      parameters:
+        - name: pid
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID del producto a eliminar
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Se elimino un producto correctamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  payload:
+                    $ref: '#/components/schemas/Products'
+        '404':
+          description: No tienes productos para eliminar
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: No puedes eliminar este producto, ya que no te pertenece
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Error interno del server al eliminar un producto, intentelo de nuevo mas tarde
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  
+  /api/products/update/{pid}:
+    put:
+      summary: Actualizar producto por su id
+      description: Actualiza los detalles de un producto existente. Se debe enviar al menos uno de los siguientes campos title, description, price, stock, category.
+      tags:
+        - Products
+      parameters:
+        - name: pid
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID del producto a actualizar
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+                price:
+                  type: number
+                stock:
+                  type: number
+                category:
+                  type: string
+      responses:
+        '200':
+          description: Producto actualizado correctamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  payload:
+                    $ref: '#/components/schemas/Products'
+        '404':
+          description: producto no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Error al actualizar el producto los datos son incorrectos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  
+
+
+components:
+  schemas:
+    Products:
+      type: object
+      properties:
+        id:
+          type: string
+          format: objectId
+          description: El ID del producto
+        title:
+          type: string
+          description: El título del producto
+        description:
+          type: string
+          description: La descripción del producto
+        price:
+          type: number
+          description: El precio del producto
+        code:
+          type: string
+          description: El código del producto
+        stock:
+          type: number
+          description: La cantidad en stock del producto
+        status:
+          type: boolean
+          description: El estado del producto (disponible o no)
+        category:
+          type: string
+          description: La categoría del producto
+        owner:
+          type: string
+          format: objectId
+          description: ID del usuario que creó el producto
+        thumbnails:
+          type: array
+          items:
+            type: string
+          description: URLs de las fotos del producto
+
+    Error:
+      type: object
+      properties:
+        status:
+          type: boolean
+          example: false
+          description: Indicación del estado de la operación (en este caso, fallida).
+        message:
+          type: string
+          example: 'Error interno del Server, Por favor inténtelo de nuevo más tarde'
+          description: Descripción detallada del error ocurrido.

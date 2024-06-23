@@ -1,0 +1,27 @@
+<div class="container shadow p-3 mb-5 bg-body-tertiary rounded mt-4">
+        {{#if products}}
+            {{#each products}}
+                <div class="card mt-4 mb-3" style="max-width: 540px;">
+                    <div class="row g-0">
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <h5 class="card-title">{{this.title}} x <span class="text-danger">{{this.quantity}}</span></h5>
+                                <p>Precio: ${{this.price}}</p>
+                                <button type="button" class="btn btn-success" id="eliminar-item" data-item-id={{this.itemId}}>Eliminar producto del cart</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>                
+            {{/each}}
+            <h2 class="mt-3 mb-3">El precio total del carrito es: ${{total}}</h2>
+            <a href="/payment/checkout">
+                <button class="btn btn-danger"  id="button-pay">Realizar la compra</button>
+            </a>
+        {{else}}
+            <h2 class="mt-3 mb-3">El carrito esta vacio</h2>
+            <p class="fs-3">Aprovecha las ofertas del dia!</p>
+            <a href="/home" class="text-danger text-decoration-none fs-3">ver ofertas</a>
+        {{/if}}
+    </div>
+
+<script src="/js/cart.js"></script>

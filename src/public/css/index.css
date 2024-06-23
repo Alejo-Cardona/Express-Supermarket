@@ -1,0 +1,66 @@
+nav {
+    height: 160px;
+    width: 100%;
+    background-color: #72bb53;
+}
+
+.menu_icon {
+    font-size: 36px;
+    color: white;
+}
+
+.cart_icon {
+    font-size: 40px;
+    color: white;
+}
+
+.user_icon {
+    font-size: 40px;
+    color: white;
+}
+
+.text_icon {
+    font-size: 14px;
+    justify-content: center;
+}
+
+.text_menu {
+    font-size: 18px;
+    justify-content: center;
+    position: relative;
+    bottom: 10px;
+    right: 5px;
+}
+
+.sub_nav {
+    background-color:rgb(232, 232, 232);
+}
+
+.sub_nav_list {
+    font-size: 16px;
+    list-style: none;
+    color: grey;
+}
+
+input {
+    height: 30px;
+}
+
+/* MEDIA QUERY */
+@media screen and (min-width: 580px) {
+    nav{
+        height: 120px;
+    }
+
+    .cart_icon {
+        font-size: 34px;
+    }
+    
+    .user_icon {
+        font-size: 34px;
+    }
+
+    .text_icon {
+        font-size: 12px;
+    }
+}

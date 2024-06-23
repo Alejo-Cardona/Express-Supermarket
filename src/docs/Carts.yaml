@@ -1,0 +1,256 @@
+openapi: 3.0.0
+info:
+  title: API de Carts
+  version: 1.0.0
+  description: API para la gestión de Carts
+
+servers:
+  - url: http://localhost:8080/api/carts
+    description: Servidor local
+
+paths:
+  /api/carts/{uid}:
+    get:
+      summary: Obtener el cart de un usuario
+      description: obtener el cart de un usuario mediante la id del usuario
+      tags:
+        - Carts
+      parameters:
+        - name: pid
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID del usuario del que se necesita obtener el cart
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Devuelve el carrito
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  payload:
+                    $ref: '#/components/schemas/Products'
+        '404':
+          description: carrito no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Error al obtener un carrito
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/carts/add/{pid}:
+    post:
+      summary: Añadir un producto a un Cart
+      description: Agregar un producto a un cart.
+      tags:
+        - Carts
+      parameters:
+        - name: pid
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID del producto a añadir al cart
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+                price:
+                  type: number
+                stock:
+                  type: number
+                category:
+                  type: string
+                photo:
+                  type: string
+                  format: binary
+                required:
+                - title
+                - description
+                - price
+                - stock
+                - category
+                - photo
+      responses:
+        '200':
+          description: Producto creado con éxito
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Carts'
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/carts/remove/{iid}:
+    delete:
+      summary: Eliminar un producto del cart
+      description: Eliminar un item del cart mediante su id
+      tags:
+        - Carts
+      parameters:
+        - name: iid
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID del producto a eliminar del cart
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Se elimino un producto correctamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  payload:
+                    $ref: '#/components/schemas/Carts'
+        '404':
+          description: No tienes productos para eliminar
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: No puedes eliminar este producto, ya que no te pertenece
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Error interno del server al eliminar un producto, intentelo de nuevo mas tarde
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/carts/{cid}/purchase:
+    post:
+      summary: realizar la compra de un cart
+      description: completar la compra de todos los productos del cart y generar un ticket
+      tags:
+        - Carts
+      parameters:
+        - name: cid
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID del cart
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Se realizo la compra correctamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  payload:
+                    $ref: '#/components/schemas/Tikcet'
+        '403':
+          description: Ninguno de los productos que quieres comprar tienen stock
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Error al Realizar una compra
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+
+components:
+  schemas:
+    Carts:
+      type: object
+      properties:
+        id:
+          type: string
+          format: objectId
+          description: El ID del Cart
+        items:
+          type: array
+          items:
+            type: object
+            properties:
+              productId:
+                type: string
+                format: objectId
+                description: El ID del producto
+              quantity:
+                type: integer
+                description: La cantidad del producto en el cart
+                minimum: 1
+            required:
+              - productId
+              - quantity
+          default: []
+      required:
+        - items
+      
+    Ticket:
+      type: object
+      properties:
+        code:
+          type: string
+          description: Código único del ticket
+        purchase_datetime:
+          type: string
+          format: date-time
+          description: Fecha y hora de la compra
+        amount:
+          type: number
+          description: Monto de la compra
+        purchaser:
+          type: string
+          description: Comprador del ticket
+      required:
+        - code
+        - purchase_datetime
+        - amount
+        - purchaser
+
+    Error:
+      type: object
+      properties:
+        status:
+          type: boolean
+          example: false
+          description: Indicación del estado de la operación (en este caso, fallida).
+        message:
+          type: string
+          example: 'Error interno del Server, Por favor inténtelo de nuevo más tarde'
+          description: Descripción detallada del error ocurrido.

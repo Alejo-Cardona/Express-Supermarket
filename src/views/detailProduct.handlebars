@@ -1,0 +1,18 @@
+<div>
+    <h1>{{ product.title }}</h1>
+    <section class="container d-block">
+        {{#if product.thumbnails}}
+            <img src="{{product.thumbnails}}" class="rounded float-start col col-2" alt="...">
+        {{else}}
+            <p>No hay imagen disponible</p>
+        {{/if}}
+        <p>{{ product.description }}</p>
+        <p>${{ product.price }}</p>
+
+        <form action="/api/carts/add/{{product._id}}" method="POST">
+            <label for="quantity">Cantidad:</label>
+            <input type="number" id="quantity" name="quantity" min="1" required>
+            <button type="submit" class="btn btn-success">Agregar al carrito</button>
+        </form>
+    </section>
+</div>

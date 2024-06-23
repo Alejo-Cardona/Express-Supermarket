@@ -1,0 +1,41 @@
+<h2 class="text-center">Holaa admin </h2>
+
+<div class="container shadow p-3 mb-5 bg-body-tertiary rounded mt-4">
+        <h3 class="mt-2 mb-4">Esta es la lista de usuarios</h3>
+        <button class="btn btn-danger" id="button-inactive">Eliminar usuarios inactivos</button>
+
+        {{#if users}}
+            {{#each users}}
+                <div class="card mt-4 mb-3" style="max-width: 540px;">
+                    <div class="row g-0">
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <h5 class="card-title">{{this.first_name}}</h5>
+                                <p>{{this.email}}</p>
+                                <p class="card-text">{{this.role}}</p>
+                                <div>
+                                    <!-- Example single danger button -->
+                                    <div class="btn-group d-inline">
+                                        <button type="button" class="btn btn-success dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                            Cambiar role
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li><a class="dropdown-item" data-value="admin" data-id-user="{{this._id}}">admin</a></li>
+                                            <li><a class="dropdown-item" data-value="premium" data-id-user="{{this._id}}">premium</a></li>
+                                            <li><a class="dropdown-item" data-value="user" data-id-user="{{this._id}}">user</a></li>
+                                        </ul>
+                                        </div>
+                                        <button class="btn btn-danger button-delete-user" id="button-delete-user" data-id-user="{{this._id}}">Eliminar usuario</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>                
+
+            {{/each}}
+        {{/if}}
+    </div>
+
+<script src="/js/admin.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/socket.js"></script>

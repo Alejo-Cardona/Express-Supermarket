@@ -1,0 +1,20 @@
+<form action="/api/users/recovery/change-password" method="POST" class="container text-center text-secondary-emphasis col-6 mt-4 rounded">
+    <h2>Ingresa la nueva contraseña</h2>
+    
+    <!-- INPUTS -->
+    <section class="container mt-4 col-8">
+        <!-- PASSWORD -->
+        <label for="password" class="form-label">Contraseña:</label>
+        <input type="password" id="password" name="password" class="form-control" required><br>
+
+    </section>
+
+    <!-- Campo oculto para el token -->
+    <input type="hidden" id="token" name="token" value="{{token}}">
+    
+    <!-- BUTTONS -->
+    <section class="mt-4">
+        <button type="submit" class="btn btn-primary">Cambiar la contraseña</button>
+    </section>
+
+</form>

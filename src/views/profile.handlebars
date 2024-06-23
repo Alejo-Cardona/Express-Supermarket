@@ -1,0 +1,67 @@
+<div class="container">
+    <p class="fs-3">Holaa {{ user.first_name }}</p>
+    <section class="mt-3">
+        <h3>Datos personales</h3>
+        <p><span class="text-danger">email: </span>{{ user.email }}</p>
+        <p><span class="text-danger">plan: </span> {{ user.role }}</p>
+    </section>
+
+    <div>
+        <form action="/api/sessions/logout" method="POST" class="mt-2 d-inline">
+            <button class="btn btn-danger">Cerrar la sesión</button>
+        </form>
+
+        {{#if showLinkUser}}
+            <div class="" id="premiumMsj">
+                <button class="btn btn-success" id="button-premium" data-id-user={{ userId }}>Conviértete en usuario premium</button>
+            </div>
+        {{/if}}
+
+        {{#if showLinkAdmin}}
+            <a href="/admin">
+                <button class="btn btn-success">Vista de administrador</button>
+            </a>
+        {{/if}}
+    </div>
+</div>
+
+{{#if showLink}}
+
+    <div class="container shadow p-3 mb-5 bg-body-tertiary rounded mt-4">
+        <h3 class="mt-2 mb-4">Aquí aparecerán los productos que crees</h3>
+        <a href="/products/form">
+            <button class="btn btn-success">Crear un producto</button>
+        </a>
+        {{#if products}}
+            {{#each products}}
+                <div class="card mt-4 mb-3" style="max-width: 540px;">
+                    <div class="row g-0">
+                        <div class="col-md-4">
+                            {{#if this.thumbnails}}
+                                <img src="{{this.thumbnails}}" class="img-fluid rounded-start" alt="...">
+                            {{else}}
+                                <p>No hay imagen disponible</p>
+                            {{/if}}
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <h5 class="card-title">{{this.title}}</h5>
+                                <p>Precio: ${{this.price}}</p>
+                                <p class="card-text">{{this.description}}</p>
+                                <a href="/products/detail/{{this._id}}" class="text-decoration-none">
+                                    <button class="btn btn-success"  id="button-detail">info</button>
+                                </a>
+                                <button class="btn btn-danger button-delete-product" id="button-delete-product" data-id-product={{this._id}}>Eliminar producto</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>                
+
+            {{/each}}
+        {{/if}}
+    </div>
+{{/if}}
+
+<script src="/js/profile.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/socket.js"></script>

@@ -1,0 +1,400 @@
+openapi: 3.0.0
+info:
+  title: API de Usuarios
+  version: 1.0.0
+  description: API para la gestión de usuarios
+
+servers:
+  - url: http://localhost:8080/api/users
+    description: Servidor local
+
+paths:
+  /api/users/:
+    get:
+      summary: Obtener todos los usuarios
+      description: Recupera todos los usuarios, ruta única para el administrador
+      tags:
+        - Users
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Devuelve un usuario completo, ruta única para el administrador
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  payload:
+                    $ref: '#/components/schemas/Users'
+        '500':
+          description: Error del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /ap/users/:
+    delete:
+      summary: Elimina usuarios inactivos
+      description: Elimina usuarios inactivos de hace 2 dias.
+      tags:
+        - Users
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Usuarios inactivos hace mas de 2 dias, eliminados con exito
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Products'
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/users/remove/{uid}:
+    delete:
+      summary: Eliminar un usuario por su id
+      description: Eliminar un usuario por su id
+      tags:
+        - Users
+      parameters:
+        - name: uid
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID del usuario a eliminar
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Se elimino un usuario correctamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  payload:
+                    $ref: '#/components/schemas/Users'
+        '500':
+          description: Error al eliminar un usuario
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  
+  /api/products/update/{pid}:
+    put:
+      summary: Actualizar producto por su id
+      description: Actualiza los detalles de un producto existente. Se debe enviar al menos uno de los siguientes campos title, description, price, stock, category.
+      tags:
+        - Products
+      parameters:
+        - name: pid
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID del producto a actualizar
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+                price:
+                  type: number
+                stock:
+                  type: number
+                category:
+                  type: string
+      responses:
+        '200':
+          description: Producto actualizado correctamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  payload:
+                    $ref: '#/components/schemas/Products'
+        '404':
+          description: producto no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Error al actualizar el producto los datos son incorrectos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  
+  /api/users/change-role/{uid}:
+    put:
+      summary: Cambiar el rol de un usuario
+      description: Cambia el rol de un usuario dado su ID.
+      tags:
+        - Users
+      parameters:
+        - name: uid
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID del usuario
+        - name: role
+          in: query
+          required: true
+          schema:
+            type: string
+          description: Nuevo rol del usuario
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Rol del usuario actualizado con éxito
+        '500':
+          description: Error al cambiar el rol del usuario
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/users/premium/{uid}:
+    put:
+      summary: Convertir a usuario premium
+      description: Convierte a un usuario a la categoría premium.
+      tags:
+        - Users
+      parameters:
+        - name: uid
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID del usuario
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Ahora eres un usuario premium!
+        '401':
+          description: No puedes acceder al plan Premium porque faltan subir documentos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Usuario no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Error al convertir un usuario a premium
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/users/documents:
+    post:
+      summary: Subir documentos
+      description: Sube documentos requeridos para el proceso.
+      tags:
+        - Users
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                profile:
+                  type: string
+                  format: binary
+                homeVoucher:
+                  type: string
+                  format: binary
+                accountVoucher:
+                  type: string
+                  format: binary
+              required:
+                - profile
+                - homeVoucher
+                - accountVoucher
+      responses:
+        '200':
+          description: Archivos subidos correctamente
+        '403':
+          description: Faltan subir documentos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Ocurrió un error al subir los documentos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/users/recovery:
+    post:
+      summary: Solicitar recuperación de cuenta
+      description: Envia un correo para recuperar la cuenta del usuario.
+      tags:
+        - Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+              required:
+                - email
+      responses:
+        '200':
+          description: Se envió un correo para recuperar la cuenta
+        '404':
+          description: Ese correo no existe en nuestra base de datos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Correo electrónico inválido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/users/recovery/change-password:
+    post:
+      summary: Cambiar contraseña después de recuperación
+      description: Cambia la contraseña después de recibir un token de recuperación válido.
+      tags:
+        - Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+                password:
+                  type: string
+              required:
+                - token
+                - password
+      responses:
+        '200':
+          description: Se cambió la contraseña con éxito
+        '401':
+          description: Error al cambiar la contraseña, el token ha expirado o es inválido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Estás intentando ingresar la misma contraseña
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+
+components:
+  schemas:
+    Users:
+      type: object
+      properties:
+        first_name:
+          type: string
+          description: Nombre del usuario
+        last_name:
+          type: string
+          description: Apellido del usuario
+        email:
+          type: string
+          description: Correo electrónico del usuario
+        age:
+          type: integer
+          description: Edad del usuario
+        password:
+          type: string
+          description: Contraseña del usuario
+        cart:
+          type: string
+          description: ID del carrito asociado al usuario
+          format: objectId
+        role:
+          type: string
+          description: Rol del usuario
+        documents:
+          type: array
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+                description: Nombre del documento
+              reference:
+                type: string
+                description: Referencia del documento
+          description: Lista de documentos asociados al usuario
+        last_connection:
+          type: string
+          format: date-time
+          description: Última conexión del usuario
+
+    Error:
+      type: object
+      properties:
+        status:
+          type: boolean
+          example: false
+          description: Indicación del estado de la operación (en este caso, fallida).
+        message:
+          type: string
+          example: 'Error interno del Server, Por favor inténtelo de nuevo más tarde'
+          description: Descripción detallada del error ocurrido.

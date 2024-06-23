@@ -1,0 +1,23 @@
+<h3 class="text-center mt-4 mb-4">Carga los documentos necesarios para convertirte en <span class="text-success">premium</span></h3>
+<form action="/api/users/documents" method="POST" enctype="multipart/form-data" class="container text-center text-secondary-emphasis col-6 mt-4 mb-4 rounded">
+
+    <section class="container mt-4 col-8">
+        <!-- IMAGE -->
+        <label for="file" class="form-label" class="">Carga una imagen de perfil ( identificación ) :</label>
+        <input type="file" name="profile" class="form-control" required><br>
+
+        <!-- DOCS -->
+        <label for="file" class="form-label">Comprobante de domicilio:</label>
+        <input type="file" name="homeVoucher" class="form-control" required><br>
+
+        <!-- DOCS -->
+        <label for="file" class="form-label">Comprobante de estado de cuenta:</label>
+        <input type="file" name="accountVoucher" class="form-control" required><br>
+    </section>
+    
+    <!-- BUTTONS -->
+    <section class="mt-4">
+        <button type="submit" class="btn btn-primary">Cargar documentos personales</button>
+    </section>
+
+</form>
